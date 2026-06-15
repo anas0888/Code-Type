@@ -1,5 +1,31 @@
-.sidebar{
+.sidebar {
     border: 2px solid black;
     height: 600px;
     width: 200px;
+    margin: 20px;
+}
+
+.typing-space {
+    border: 2px solid black;
+    height: 600px;
+    width: 800px;
+    margin: 20px;
+}
+
+.speed {
+    border: 2px solid black;
+    height: 200px;
+    width: 200px;
+    margin: 20px;
+}
+
+.accuracy {
+    border: 2px solid black;
+    height: 200px;
+    width: 200px;
+    margin: 20px;
+}
+
+.container {
+    display: flex;
 }
