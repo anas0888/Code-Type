@@ -1,85 +1,122 @@
-let snippet = `function greet(name) {
+let snippets = [
+`function greet(name) {
   console.log("Hello " + name);
 }
 
-greet("Ateeb");`;
+greet("Ali");`,
 
-let codeBox = document.getElementById("code-box");
-let speedText = document.getElementById("speed");
-let accuracyText = document.getElementById("accuracy");
+`const nums = [1,2,3];
+nums.forEach(n => {
+  console.log(n);
+});`
+];
 
+let codeDiv = document.getElementById("code");
+let wpmText = document.getElementById("wpm");
+let accText = document.getElementById("acc");
+let resultDiv = document.getElementById("result");
+
+let text = "";
 let index = 0;
 let startTime = null;
 
-// load text
-function loadText() {
-    codeBox.innerHTML = "";
-    index = 0;
 
-    for (let i = 0; i < snippet.length; i++) {
+function load() {
+    codeDiv.innerHTML = "";
+    resultDiv.classList.add("hidden");
+
+    text = snippets[Math.floor(Math.random() * snippets.length)];
+    index = 0;
+    startTime = null;
+
+    for (let i = 0; i < text.length; i++) {
         let span = document.createElement("span");
-        span.innerText = snippet[i];
-        codeBox.appendChild(span);
+        span.innerText = text[i];
+        span.classList.add("char");
+
+        if (i === 0) span.classList.add("active");
+
+        codeDiv.appendChild(span);
     }
 }
 
-loadText();
+load();
 
-// typing
+
 document.addEventListener("keydown", function(e) {
-    let spans = codeBox.querySelectorAll("span");
+    let chars = document.querySelectorAll(".char");
 
-    if (!startTime) {
-        startTime = new Date();
-    }
+    if (!startTime) startTime = new Date();
 
-    // normal key
     if (e.key.length === 1) {
-        if (e.key === snippet[index]) {
-            spans[index].style.color = "beige";
+
+        if (e.key === text[index]) {
+            chars[index].classList.add("correct");
         } else {
-            spans[index].style.color = "red";
+            chars[index].classList.add("wrong");
         }
 
+        chars[index].classList.remove("active");
         index++;
+
+        
+        if (chars[index]) {
+            chars[index].classList.add("active");
+        }
+
         updateStats();
+
+        
+        if (index === text.length) {
+            endTest();
+        }
     }
 
     // backspace
     if (e.key === "Backspace" && index > 0) {
+        chars[index].classList.remove("active");
         index--;
-        spans[index].style.color = "#f5f5dc";
+
+        chars[index].classList.remove("correct", "wrong");
+        chars[index].classList.add("active");
     }
 });
 
-// stats
+
 function updateStats() {
     let time = (new Date() - startTime) / 1000 / 60;
 
-    let wpm = Math.floor((index / 5) / time);
-    if (!wpm || wpm < 0) wpm = 0;
+    let wpm = Math.floor((index / 5) / time) || 0;
+    wpmText.innerText = wpm;
 
-    speedText.innerText = wpm;
+    let correct = document.querySelectorAll(".correct").length;
+    let acc = Math.floor((correct / index) * 100) || 100;
 
-    let correct = 0;
-    let spans = codeBox.querySelectorAll("span");
+    accText.innerText = acc + "%";
+}
 
-    for (let i = 0; i < index; i++) {
-        if (spans[i].style.color === "beige") {
-            correct++;
-        }
+
+function endTest() {
+    let time = (new Date() - startTime) / 1000;
+
+    let wpm = wpmText.innerText;
+    let acc = accText.innerText;
+
+    resultDiv.classList.remove("hidden");
+    resultDiv.innerHTML = `
+        Finished! <br>
+        WPM: ${wpm} <br>
+        Accuracy: ${acc} <br>
+        Time: ${time.toFixed(1)}s
+    `;
+}
+
+
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Tab") {
+        e.preventDefault();
+        load();
+        wpmText.innerText = 0;
+        accText.innerText = "100%";
     }
-
-    let accuracy = Math.floor((correct / index) * 100);
-    if (!accuracy) accuracy = 100;
-
-    accuracyText.innerText = accuracy;
-}
-
-// restart
-function restart() {
-    startTime = null;
-    speedText.innerText = 0;
-    accuracyText.innerText = 100;
-    loadText();
-}
+});

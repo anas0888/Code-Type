@@ -34,7 +34,7 @@ body {
     color: #ca4754;
 }
 
-/* active cursor position */
+
 .active {
     border-left: 2px solid #e2b714;
     padding-left: 2px;
