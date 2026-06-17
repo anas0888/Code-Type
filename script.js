@@ -70,7 +70,7 @@ function setLanguage(lang, e) {
     resetStats();
 }
 
-// typing
+
 document.addEventListener("keydown", function(e) {
     let chars = document.querySelectorAll(".char");
 
