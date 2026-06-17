@@ -1,43 +1,22 @@
 <!DOCTYPE html>
-<html lang='en'>
-<meta charset="urf-8">
+<html>
 <head>
-    <title> Code Typing</title>
+    <title>Code Typing Practice</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<link rel="stylesheet" href="style.css">
-
 <body>
-    <p>This is to check is everything connected properly.</p>
-    <header>
-        <h3>Code Type</h3>
-    </header>
-    <div class="container">
 
-        <div class="sidebar">
-            <p>Select language </p>
-            <button> Java Script </button> <br> <br>
-            <p>Choose difficulty level</p>
-            <button> Easy </button> <br><br><br>
-            <button> Medium </button> <br><br><br>
-            <button> Hard </button>
-        </div>
+    <h1>Code Typing Practice</h1>
 
-        <div class="typing-space">
-            
-        </div>
-        
+    <div id="code-box"></div>
 
-        <div class="speed"> <p>Typing Speed</p>
-        </div>
-
-        <div class="accuracy"> <p>Typing accuracy</p>
-        </div>
+    <div id="stats">
+        <p>Speed: <span id="speed">0</span> WPM</p>
+        <p>Accuracy: <span id="accuracy">100</span>%</p>
     </div>
 
-    <button> reset</button>
-
+    <button onclick="restart()">Restart</button>
 
     <script src="script.js"></script>
 </body>
-
 </html>

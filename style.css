@@ -1,31 +1,47 @@
-.sidebar {
-    border: 2px solid black;
-    height: 600px;
-    width: 200px;
-    margin: 20px;
+body {
+    background-color: #2b2b2b;
+    color: #f5f5dc;
+    font-family: monospace;
+    text-align: center;
 }
 
-.typing-space {
-    border: 2px solid black;
-    height: 600px;
-    width: 800px;
-    margin: 20px;
+#code-box {
+    width: 60%;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #3a3a3a;
+    border-radius: 5px;
+    text-align: left;
+    line-height: 1.5;
+    position: relative;
 }
 
-.speed {
-    border: 2px solid black;
-    height: 200px;
-    width: 200px;
-    margin: 20px;
+/* characters */
+.char {
+    opacity: 0.6;
 }
 
-.accuracy {
-    border: 2px solid black;
-    height: 200px;
-    width: 200px;
-    margin: 20px;
+.correct {
+    color: #f5f5dc;
+    opacity: 1;
 }
 
-.container {
-    display: flex;
+.wrong {
+    color: red;
+}
+
+/* cursor */
+.cursor {
+    display: inline-block;
+    width: 2px;
+    height: 18px;
+    background-color: #f5f5dc;
+    position: absolute;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
 }
