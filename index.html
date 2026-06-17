@@ -4,9 +4,24 @@
     <title>Code Typing</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dark">
 
-    <div class="container">
+<div class="app">
+
+    
+    <div class="sidebar">
+        <h3>Languages</h3>
+        <button onclick="setLanguage('js', event)">JavaScript</button>
+        <button onclick="setLanguage('c', event)">C</button>
+        <button onclick="setLanguage('cpp', event)">C++</button>
+    </div>
+
+    
+    <div class="main">
+
+        <div class="topbar">
+            <button id="themeBtn">🌙 Dark</button>
+        </div>
 
         <div id="stats">
             <span id="wpm">0</span> wpm
@@ -19,6 +34,8 @@
 
     </div>
 
-    <script src="script.js"></script>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
