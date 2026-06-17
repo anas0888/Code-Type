@@ -1,31 +1,48 @@
-let snippets = [
+let snippets = {
+    js: [
 `function greet(name) {
   console.log("Hello " + name);
 }
 
-greet("Ali");`,
+greet("Ali");`
+    ],
+    c: [
+`#include <stdio.h>
 
-`const nums = [1,2,3];
-nums.forEach(n => {
-  console.log(n);
-});`
-];
+int main() {
+    printf("Hello World");
+    return 0;
+}`
+    ],
+    cpp: [
+`#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "Hello World";
+    return 0;
+}`
+    ]
+};
+
+let currentLang = "js";
+let text = "";
+let index = 0;
+let startTime = null;
 
 let codeDiv = document.getElementById("code");
 let wpmText = document.getElementById("wpm");
 let accText = document.getElementById("acc");
 let resultDiv = document.getElementById("result");
 
-let text = "";
-let index = 0;
-let startTime = null;
-
 
 function load() {
     codeDiv.innerHTML = "";
     resultDiv.classList.add("hidden");
 
-    text = snippets[Math.floor(Math.random() * snippets.length)];
+    let arr = snippets[currentLang];
+    text = arr[Math.floor(Math.random() * arr.length)];
+
     index = 0;
     startTime = null;
 
@@ -40,16 +57,26 @@ function load() {
     }
 }
 
-load();
 
+function setLanguage(lang, e) {
+    currentLang = lang;
 
+    document.querySelectorAll(".sidebar button")
+        .forEach(btn => btn.classList.remove("active-btn"));
+
+    e.target.classList.add("active-btn");
+
+    load();
+    resetStats();
+}
+
+// typing
 document.addEventListener("keydown", function(e) {
     let chars = document.querySelectorAll(".char");
 
     if (!startTime) startTime = new Date();
 
     if (e.key.length === 1) {
-
         if (e.key === text[index]) {
             chars[index].classList.add("correct");
         } else {
@@ -59,20 +86,13 @@ document.addEventListener("keydown", function(e) {
         chars[index].classList.remove("active");
         index++;
 
-        
-        if (chars[index]) {
-            chars[index].classList.add("active");
-        }
+        if (chars[index]) chars[index].classList.add("active");
 
         updateStats();
 
-        
-        if (index === text.length) {
-            endTest();
-        }
+        if (index === text.length) endTest();
     }
 
-    // backspace
     if (e.key === "Backspace" && index > 0) {
         chars[index].classList.remove("active");
         index--;
@@ -82,7 +102,7 @@ document.addEventListener("keydown", function(e) {
     }
 });
 
-
+// stats
 function updateStats() {
     let time = (new Date() - startTime) / 1000 / 60;
 
@@ -95,28 +115,39 @@ function updateStats() {
     accText.innerText = acc + "%";
 }
 
+function resetStats() {
+    wpmText.innerText = 0;
+    accText.innerText = "100%";
+}
+
 
 function endTest() {
     let time = (new Date() - startTime) / 1000;
 
-    let wpm = wpmText.innerText;
-    let acc = accText.innerText;
-
     resultDiv.classList.remove("hidden");
     resultDiv.innerHTML = `
         Finished! <br>
-        WPM: ${wpm} <br>
-        Accuracy: ${acc} <br>
+        WPM: ${wpmText.innerText} <br>
+        Accuracy: ${accText.innerText} <br>
         Time: ${time.toFixed(1)}s
     `;
 }
 
 
-document.addEventListener("keydown", function(e) {
-    if (e.key === "Tab") {
-        e.preventDefault();
-        load();
-        wpmText.innerText = 0;
-        accText.innerText = "100%";
-    }
-});
+let themes = ["dark", "light", "neon"];
+let themeIndex = 0;
+
+let themeBtn = document.getElementById("themeBtn");
+
+themeBtn.onclick = function() {
+    document.body.classList.remove(themes[themeIndex]);
+
+    themeIndex = (themeIndex + 1) % themes.length;
+
+    document.body.classList.add(themes[themeIndex]);
+
+    themeBtn.innerText = themes[themeIndex].toUpperCase();
+};
+
+// init
+load();
