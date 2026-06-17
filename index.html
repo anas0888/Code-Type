@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Code Typing Practice</title>
+    <title>Code Typing</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>Code Typing Practice</h1>
+    <div class="container">
 
-    <div id="code-box"></div>
+        <div id="stats">
+            <span id="wpm">0</span> wpm
+            <span id="acc">100%</span> acc
+        </div>
 
-    <div id="stats">
-        <p>Speed: <span id="speed">0</span> WPM</p>
-        <p>Accuracy: <span id="accuracy">100</span>%</p>
+        <div id="code"></div>
+
+        <div id="result" class="hidden"></div>
+
     </div>
-
-    <button onclick="restart()">Restart</button>
 
     <script src="script.js"></script>
 </body>
