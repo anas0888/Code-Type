@@ -102,7 +102,7 @@ document.addEventListener("keydown", function(e) {
     }
 });
 
-// stats
+
 function updateStats() {
     let time = (new Date() - startTime) / 1000 / 60;
 
@@ -149,5 +149,5 @@ themeBtn.onclick = function() {
     themeBtn.innerText = themes[themeIndex].toUpperCase();
 };
 
-// init
+
 load();
