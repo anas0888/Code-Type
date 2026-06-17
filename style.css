@@ -1,43 +1,109 @@
+
+body.dark {
+    background: #2a2d31;
+    color: #b9bbbe;
+}
+
+
+body.light {
+    background: #f5f5f5;
+    color: #333;
+}
+
+
+body.neon {
+    background: #0f172a;
+    color: #22c55e;
+}
+
+
 body {
-    background: #323437;
-    color: #646669;
+    margin: 0;
     font-family: monospace;
 }
 
-.container {
-    width: 70%;
-    margin: 100px auto;
+.app {
+    display: flex;
 }
+
+
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    padding: 20px;
+}
+
+body.dark .sidebar { background: #23272a; }
+body.light .sidebar { background: #ffffff; }
+body.neon .sidebar { background: #020617; }
+
+.sidebar button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+body.dark .sidebar button { background: #2f3136; color: #fff; }
+body.light .sidebar button { background: #eaeaea; }
+body.neon .sidebar button { background: #020617; color: #22c55e; }
+
+.sidebar button.active-btn {
+    background: #ffd166 !important;
+    color: #000 !important;
+}
+
+
+.main {
+    flex: 1;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.topbar {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+}
+
+#themeBtn {
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+}
+
 
 #stats {
-    color: #e2b714;
-    font-size: 20px;
+    font-size: 22px;
     margin-bottom: 30px;
+    color: #ffd166;
 }
+
 
 #code {
-    font-size: 22px;
-    line-height: 1.6;
+    width: 70%;
+    font-size: 24px;
+    line-height: 1.7;
+    padding: 20px;
+    border-radius: 8px;
 }
 
-/* characters */
-.char {
-    opacity: 0.5;
-}
+body.dark #code { background: #23272a; }
+body.light #code { background: #ffffff; }
+body.neon #code { background: #020617; box-shadow: 0 0 20px #22c55e; }
 
-.correct {
-    color: #d1d0c5;
-    opacity: 1;
-}
 
-.wrong {
-    color: #ca4754;
-}
+.char { opacity: 0.4; }
+.correct { opacity: 1; }
+.wrong { color: red; }
 
 
 .active {
-    border-left: 2px solid #e2b714;
-    padding-left: 2px;
+    border-left: 2px solid #ffd166;
     animation: blink 1s infinite;
 }
 
@@ -45,12 +111,11 @@ body {
     50% { border-color: transparent; }
 }
 
-.hidden {
-    display: none;
-}
+
+.hidden { display: none; }
 
 #result {
     margin-top: 40px;
     font-size: 24px;
-    color: #e2b714;
+    text-align: center;
 }
