@@ -1,41 +1,21 @@
-
-body.dark {
-    background: #2a2d31;
-    color: #b9bbbe;
-}
-
-
-body.light {
-    background: #f5f5f5;
-    color: #333;
-}
-
-
-body.neon {
-    background: #0f172a;
-    color: #22c55e;
-}
-
-
 body {
     margin: 0;
     font-family: monospace;
 }
 
-.app {
-    display: flex;
-}
+/* THEMES */
+body.dark { background: #2a2d31; color: #b9bbbe; }
+body.light { background: #f5f5f5; color: #333; }
+body.neon { background: #0f172a; color: #22c55e; }
 
+.app { display: flex; }
 
+/* SIDEBAR */
 .sidebar {
     width: 220px;
     height: 100vh;
     padding: 20px;
 }
-
-body.dark .sidebar { background: #23272a; }
-body.light .sidebar { background: #ffffff; }
-body.neon .sidebar { background: #020617; }
 
 .sidebar button {
     width: 100%;
@@ -45,16 +25,12 @@ body.neon .sidebar { background: #020617; }
     cursor: pointer;
 }
 
-body.dark .sidebar button { background: #2f3136; color: #fff; }
-body.light .sidebar button { background: #eaeaea; }
-body.neon .sidebar button { background: #020617; color: #22c55e; }
-
 .sidebar button.active-btn {
-    background: #ffd166 !important;
-    color: #000 !important;
+    background: #ffd166;
+    color: black;
 }
 
-
+/* MAIN */
 .main {
     flex: 1;
     padding: 60px;
@@ -63,7 +39,7 @@ body.neon .sidebar button { background: #020617; color: #22c55e; }
     align-items: center;
 }
 
-
+/* TOPBAR */
 .topbar {
     position: absolute;
     top: 20px;
@@ -76,14 +52,18 @@ body.neon .sidebar button { background: #020617; color: #22c55e; }
     cursor: pointer;
 }
 
-
+/* STATS */
 #stats {
-    font-size: 22px;
+    font-size: 20px;
     margin-bottom: 30px;
     color: #ffd166;
 }
 
+#stats span {
+    margin-right: 20px;
+}
 
+/* CODE */
 #code {
     width: 70%;
     font-size: 24px;
@@ -93,15 +73,15 @@ body.neon .sidebar button { background: #020617; color: #22c55e; }
 }
 
 body.dark #code { background: #23272a; }
-body.light #code { background: #ffffff; }
+body.light #code { background: #fff; }
 body.neon #code { background: #020617; box-shadow: 0 0 20px #22c55e; }
 
-
+/* TYPING */
 .char { opacity: 0.4; }
-.correct { opacity: 1; }
+.correct { color: white; opacity: 1; }
 .wrong { color: red; }
 
-
+/* CURSOR */
 .active {
     border-left: 2px solid #ffd166;
     animation: blink 1s infinite;
@@ -111,7 +91,7 @@ body.neon #code { background: #020617; box-shadow: 0 0 20px #22c55e; }
     50% { border-color: transparent; }
 }
 
-
+/* RESULT */
 .hidden { display: none; }
 
 #result {
