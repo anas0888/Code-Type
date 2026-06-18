@@ -178,7 +178,7 @@ function endTest() {
 
     resultDiv.classList.remove("hidden");
     resultDiv.innerHTML = `
-        ✅ Finished!<br>
+        Finished!<br>
         WPM: <strong>${wpmText.innerText}</strong> &nbsp;
         Raw: <strong>${rawText.innerText}</strong><br>
         Accuracy: <strong>${accText.innerText}</strong><br>
