@@ -10,7 +10,7 @@
 
     <div class="sidebar">
         <h3>Languages</h3>
-        <button onclick="setLanguage('js', event)">JavaScript</button>
+        <button onclick="setLanguage('js', event)" class="active-btn">JavaScript</button>
         <button onclick="setLanguage('c', event)">C</button>
         <button onclick="setLanguage('cpp', event)">C++</button>
     </div>
@@ -18,13 +18,12 @@
     <div class="main">
 
         <div class="topbar">
-            <button id="themeBtn">🌙</button>
+            <button id="themeBtn">🌙 DARK</button>
         </div>
 
         <div id="stats">
-            <span>WPM: <b id="wpm">0</b></span>
-            <span>RAW: <b id="raw">0</b></span>
-            <span>ACC: <b id="acc">100%</b></span>
+            <span id="wpm">0</span> wpm &nbsp;
+            <span id="acc">100%</span> acc
         </div>
 
         <div id="code"></div>
