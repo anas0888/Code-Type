@@ -31,11 +31,11 @@ let index = 0;
 let startTime = null;
 let finished = false;
 
-// totalKeystrokes / correctKeystrokes: decrement on backspace — used for accuracy + WPM
+
 let totalKeystrokes = 0;
 let correctKeystrokes = 0;
 
-// rawKeystrokes: only ever goes up, never decremented — used for raw WPM
+
 let rawKeystrokes = 0;
 
 let codeDiv   = document.getElementById("code");
@@ -88,13 +88,13 @@ document.addEventListener("keydown", function(e) {
 
     let chars = document.querySelectorAll(".char");
 
-    // Prevent space from scrolling the page
+   
     if (e.key === " ") e.preventDefault();
 
-    // Treat Enter as \n for typing — prevent any default (form submit, page scroll, restart)
+   
     if (e.key === "Enter") e.preventDefault();
 
-    // --- Backspace ---
+   
     if (e.key === "Backspace") {
         if (index === 0) return;
 
@@ -111,17 +111,17 @@ document.addEventListener("keydown", function(e) {
         return;
     }
 
-    // Normalize Enter → "\n" so it matches the snippet's newline characters
+    
     let typedChar = e.key === "Enter" ? "\n" : e.key;
 
-    // Only accept single printable characters + the normalized newline
+  
     if (typedChar !== "\n" && typedChar.length !== 1) return;
 
-    // Start timer on first keypress
+  
     if (!startTime) startTime = new Date();
 
     totalKeystrokes++;
-    rawKeystrokes++;      // raw never goes back down
+    rawKeystrokes++;      
 
     if (typedChar === text[index]) {
         chars[index].classList.add("correct");
@@ -149,15 +149,15 @@ function updateStats() {
 
     let minutes = (new Date() - startTime) / 1000 / 60;
 
-    // WPM: only correct characters count toward words
+
     let wpm = minutes > 0 ? Math.floor((correctKeystrokes / 5) / minutes) : 0;
     wpmText.innerText = wpm;
 
-    // Raw WPM: every character typed forward counts, errors included
+   
     let raw = minutes > 0 ? Math.floor((rawKeystrokes / 5) / minutes) : 0;
     rawText.innerText = raw;
 
-    // Accuracy: correct vs total (backspace-adjusted)
+   
     let acc = totalKeystrokes > 0
         ? Math.floor((correctKeystrokes / totalKeystrokes) * 100)
         : 100;
@@ -188,7 +188,7 @@ function endTest() {
 }
 
 
-// Theme cycling
+
 let themes = ["dark", "light", "neon"];
 let themeLabels = ["🌙 DARK", "☀️ LIGHT", "⚡ NEON"];
 let themeIndex = 0;
