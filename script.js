@@ -30,21 +30,26 @@ let text = "";
 let index = 0;
 let startTime = null;
 
+let totalTyped = 0;
+let correctTyped = 0;
+
 let codeDiv = document.getElementById("code");
 let wpmText = document.getElementById("wpm");
+let rawText = document.getElementById("raw");
 let accText = document.getElementById("acc");
 let resultDiv = document.getElementById("result");
 
-
+// LOAD
 function load() {
     codeDiv.innerHTML = "";
-    resultDiv.classList.add("hidden");
 
     let arr = snippets[currentLang];
     text = arr[Math.floor(Math.random() * arr.length)];
 
     index = 0;
     startTime = null;
+    totalTyped = 0;
+    correctTyped = 0;
 
     for (let i = 0; i < text.length; i++) {
         let span = document.createElement("span");
@@ -57,7 +62,7 @@ function load() {
     }
 }
 
-
+// LANGUAGE
 function setLanguage(lang, e) {
     currentLang = lang;
 
@@ -70,23 +75,27 @@ function setLanguage(lang, e) {
     resetStats();
 }
 
-
+// TYPING
 document.addEventListener("keydown", function(e) {
     let chars = document.querySelectorAll(".char");
 
     if (!startTime) startTime = new Date();
 
     if (e.key.length === 1) {
+
+        totalTyped++;
+
         if (e.key === text[index]) {
             chars[index].classList.add("correct");
+            chars[index].classList.remove("active");
+
+            index++;
+            correctTyped++;
+
+            if (chars[index]) chars[index].classList.add("active");
         } else {
             chars[index].classList.add("wrong");
         }
-
-        chars[index].classList.remove("active");
-        index++;
-
-        if (chars[index]) chars[index].classList.add("active");
 
         updateStats();
 
@@ -94,33 +103,33 @@ document.addEventListener("keydown", function(e) {
     }
 
     if (e.key === "Backspace" && index > 0) {
-        chars[index].classList.remove("active");
         index--;
-
         chars[index].classList.remove("correct", "wrong");
         chars[index].classList.add("active");
     }
 });
 
-
+// STATS
 function updateStats() {
     let time = (new Date() - startTime) / 1000 / 60;
 
-    let wpm = Math.floor((index / 5) / time) || 0;
+    let rawWPM = Math.floor((totalTyped / 5) / time) || 0;
+    let wpm = Math.floor((correctTyped / 5) / time) || 0;
+
+    rawText.innerText = rawWPM;
     wpmText.innerText = wpm;
 
-    let correct = document.querySelectorAll(".correct").length;
-    let acc = Math.floor((correct / index) * 100) || 100;
-
+    let acc = Math.floor((correctTyped / totalTyped) * 100) || 100;
     accText.innerText = acc + "%";
 }
 
 function resetStats() {
     wpmText.innerText = 0;
+    rawText.innerText = 0;
     accText.innerText = "100%";
 }
 
-
+// END
 function endTest() {
     let time = (new Date() - startTime) / 1000;
 
@@ -128,26 +137,23 @@ function endTest() {
     resultDiv.innerHTML = `
         Finished! <br>
         WPM: ${wpmText.innerText} <br>
-        Accuracy: ${accText.innerText} <br>
+        RAW: ${rawText.innerText} <br>
+        ACC: ${accText.innerText} <br>
         Time: ${time.toFixed(1)}s
     `;
 }
 
-
+// THEMES
 let themes = ["dark", "light", "neon"];
 let themeIndex = 0;
 
-let themeBtn = document.getElementById("themeBtn");
-
-themeBtn.onclick = function() {
+document.getElementById("themeBtn").onclick = function() {
     document.body.classList.remove(themes[themeIndex]);
 
     themeIndex = (themeIndex + 1) % themes.length;
 
     document.body.classList.add(themes[themeIndex]);
-
-    themeBtn.innerText = themes[themeIndex].toUpperCase();
 };
 
-
+// INIT
 load();
