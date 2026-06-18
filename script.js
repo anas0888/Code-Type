@@ -29,40 +29,45 @@ let currentLang = "js";
 let text = "";
 let index = 0;
 let startTime = null;
+let finished = false;
 
-let totalTyped = 0;
-let correctTyped = 0;
+// Accuracy tracking: count total keypresses and correct keypresses separately
+// so backspace + retype doesn't inflate accuracy unfairly.
+let totalKeystrokes = 0;
+let correctKeystrokes = 0;
 
-let codeDiv = document.getElementById("code");
-let wpmText = document.getElementById("wpm");
-let rawText = document.getElementById("raw");
-let accText = document.getElementById("acc");
-let resultDiv = document.getElementById("result");
+let codeDiv    = document.getElementById("code");
+let wpmText    = document.getElementById("wpm");
+let accText    = document.getElementById("acc");
+let resultDiv  = document.getElementById("result");
 
-// LOAD
+
 function load() {
     codeDiv.innerHTML = "";
+    resultDiv.classList.add("hidden");
 
     let arr = snippets[currentLang];
     text = arr[Math.floor(Math.random() * arr.length)];
 
     index = 0;
     startTime = null;
-    totalTyped = 0;
-    correctTyped = 0;
+    finished = false;
+    totalKeystrokes = 0;
+    correctKeystrokes = 0;
 
     for (let i = 0; i < text.length; i++) {
         let span = document.createElement("span");
-        span.innerText = text[i];
+        // Use textContent so whitespace/newlines render correctly
+        span.textContent = text[i];
         span.classList.add("char");
-
         if (i === 0) span.classList.add("active");
-
         codeDiv.appendChild(span);
     }
+
+    resetStats();
 }
 
-// LANGUAGE
+
 function setLanguage(lang, e) {
     currentLang = lang;
 
@@ -72,88 +77,120 @@ function setLanguage(lang, e) {
     e.target.classList.add("active-btn");
 
     load();
-    resetStats();
 }
 
-// TYPING
+
 document.addEventListener("keydown", function(e) {
+    // Ignore all input once the test is done
+    if (finished) return;
+
     let chars = document.querySelectorAll(".char");
 
-    if (!startTime) startTime = new Date();
+    // Prevent space from scrolling the page
+    if (e.key === " ") e.preventDefault();
 
-    if (e.key.length === 1) {
+    // --- Backspace ---
+    if (e.key === "Backspace") {
+        // Can't go before the start
+        if (index === 0) return;
 
-        totalTyped++;
-
-        if (e.key === text[index]) {
-            chars[index].classList.add("correct");
-            chars[index].classList.remove("active");
-
-            index++;
-            correctTyped++;
-
-            if (chars[index]) chars[index].classList.add("active");
-        } else {
-            chars[index].classList.add("wrong");
-        }
-
-        updateStats();
-
-        if (index === text.length) endTest();
-    }
-
-    if (e.key === "Backspace" && index > 0) {
+        chars[index].classList.remove("active");
         index--;
+
+        // Un-mark the character; also undo its keystroke from accuracy tracking
+        if (chars[index].classList.contains("correct")) {
+            correctKeystrokes--;
+        }
         chars[index].classList.remove("correct", "wrong");
         chars[index].classList.add("active");
+
+        // Undo the keystroke count too so backspace+retype is fair
+        totalKeystrokes--;
+
+        updateStats();
+        return;
     }
+
+    // --- Printable characters only ---
+    if (e.key.length !== 1) return;
+
+    // Start the timer on the very first keypress
+    if (!startTime) startTime = new Date();
+
+    totalKeystrokes++;
+
+    if (e.key === text[index]) {
+        chars[index].classList.add("correct");
+        correctKeystrokes++;
+    } else {
+        chars[index].classList.add("wrong");
+    }
+
+    chars[index].classList.remove("active");
+    index++;
+
+    if (index < chars.length) {
+        chars[index].classList.add("active");
+        // Keep the active character scrolled into view for long snippets
+        chars[index].scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+
+    updateStats();
+
+    if (index === text.length) endTest();
 });
 
-// STATS
+
 function updateStats() {
-    let time = (new Date() - startTime) / 1000 / 60;
+    if (!startTime) return;
 
-    let rawWPM = Math.floor((totalTyped / 5) / time) || 0;
-    let wpm = Math.floor((correctTyped / 5) / time) || 0;
-
-    rawText.innerText = rawWPM;
+    let minutes = (new Date() - startTime) / 1000 / 60;
+    let wpm = minutes > 0 ? Math.floor((index / 5) / minutes) : 0;
     wpmText.innerText = wpm;
 
-    let acc = Math.floor((correctTyped / totalTyped) * 100) || 100;
+    // Accuracy = correct keystrokes / total keystrokes (never divide by zero)
+    let acc = totalKeystrokes > 0
+        ? Math.floor((correctKeystrokes / totalKeystrokes) * 100)
+        : 100;
+
     accText.innerText = acc + "%";
 }
 
 function resetStats() {
     wpmText.innerText = 0;
-    rawText.innerText = 0;
     accText.innerText = "100%";
 }
 
-// END
+
 function endTest() {
-    let time = (new Date() - startTime) / 1000;
+    finished = true;
+
+    let time = ((new Date() - startTime) / 1000).toFixed(1);
 
     resultDiv.classList.remove("hidden");
     resultDiv.innerHTML = `
-        Finished! <br>
-        WPM: ${wpmText.innerText} <br>
-        RAW: ${rawText.innerText} <br>
-        ACC: ${accText.innerText} <br>
-        Time: ${time.toFixed(1)}s
+        ✅ Finished!<br>
+        WPM: <strong>${wpmText.innerText}</strong><br>
+        Accuracy: <strong>${accText.innerText}</strong><br>
+        Time: <strong>${time}s</strong><br>
+        <button id="restart-btn" onclick="load()">↺ Restart</button>
     `;
 }
 
-// THEMES
+
+// Theme cycling
 let themes = ["dark", "light", "neon"];
+let themeLabels = ["🌙 DARK", "☀️ LIGHT", "⚡ NEON"];
 let themeIndex = 0;
 
-document.getElementById("themeBtn").onclick = function() {
+let themeBtn = document.getElementById("themeBtn");
+
+themeBtn.onclick = function () {
     document.body.classList.remove(themes[themeIndex]);
-
     themeIndex = (themeIndex + 1) % themes.length;
-
     document.body.classList.add(themes[themeIndex]);
+    themeBtn.innerText = themeLabels[themeIndex];
 };
 
-// INIT
+
 load();
