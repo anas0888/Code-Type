@@ -31,8 +31,7 @@ let index = 0;
 let startTime = null;
 let finished = false;
 
-// Accuracy tracking: count total keypresses and correct keypresses separately
-// so backspace + retype doesn't inflate accuracy unfairly.
+
 let totalKeystrokes = 0;
 let correctKeystrokes = 0;
 
@@ -57,7 +56,8 @@ function load() {
 
     for (let i = 0; i < text.length; i++) {
         let span = document.createElement("span");
-        // Use textContent so whitespace/newlines render correctly
+     
+
         span.textContent = text[i];
         span.classList.add("char");
         if (i === 0) span.classList.add("active");
@@ -81,15 +81,15 @@ function setLanguage(lang, e) {
 
 
 document.addEventListener("keydown", function(e) {
-    // Ignore all input once the test is done
+  
     if (finished) return;
 
     let chars = document.querySelectorAll(".char");
 
-    // Prevent space from scrolling the page
+   
     if (e.key === " ") e.preventDefault();
 
-    // --- Backspace ---
+    
     if (e.key === "Backspace") {
         // Can't go before the start
         if (index === 0) return;
@@ -97,24 +97,24 @@ document.addEventListener("keydown", function(e) {
         chars[index].classList.remove("active");
         index--;
 
-        // Un-mark the character; also undo its keystroke from accuracy tracking
+    
         if (chars[index].classList.contains("correct")) {
             correctKeystrokes--;
         }
         chars[index].classList.remove("correct", "wrong");
         chars[index].classList.add("active");
 
-        // Undo the keystroke count too so backspace+retype is fair
+      
         totalKeystrokes--;
 
         updateStats();
         return;
     }
 
-    // --- Printable characters only ---
     if (e.key.length !== 1) return;
 
-    // Start the timer on the very first keypress
+    
+    
     if (!startTime) startTime = new Date();
 
     totalKeystrokes++;
@@ -131,7 +131,8 @@ document.addEventListener("keydown", function(e) {
 
     if (index < chars.length) {
         chars[index].classList.add("active");
-        // Keep the active character scrolled into view for long snippets
+      
+        
         chars[index].scrollIntoView({ block: "nearest", behavior: "smooth" });
     }
 
@@ -148,7 +149,8 @@ function updateStats() {
     let wpm = minutes > 0 ? Math.floor((index / 5) / minutes) : 0;
     wpmText.innerText = wpm;
 
-    // Accuracy = correct keystrokes / total keystrokes (never divide by zero)
+    
+    
     let acc = totalKeystrokes > 0
         ? Math.floor((correctKeystrokes / totalKeystrokes) * 100)
         : 100;
@@ -178,7 +180,7 @@ function endTest() {
 }
 
 
-// Theme cycling
+
 let themes = ["dark", "light", "neon"];
 let themeLabels = ["🌙 DARK", "☀️ LIGHT", "⚡ NEON"];
 let themeIndex = 0;
