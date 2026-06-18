@@ -31,14 +31,18 @@ let index = 0;
 let startTime = null;
 let finished = false;
 
-
+// totalKeystrokes / correctKeystrokes: decrement on backspace — used for accuracy + WPM
 let totalKeystrokes = 0;
 let correctKeystrokes = 0;
 
-let codeDiv    = document.getElementById("code");
-let wpmText    = document.getElementById("wpm");
-let accText    = document.getElementById("acc");
-let resultDiv  = document.getElementById("result");
+// rawKeystrokes: only ever goes up, never decremented — used for raw WPM
+let rawKeystrokes = 0;
+
+let codeDiv   = document.getElementById("code");
+let wpmText   = document.getElementById("wpm");
+let rawText   = document.getElementById("raw");
+let accText   = document.getElementById("acc");
+let resultDiv = document.getElementById("result");
 
 
 function load() {
@@ -53,11 +57,10 @@ function load() {
     finished = false;
     totalKeystrokes = 0;
     correctKeystrokes = 0;
+    rawKeystrokes = 0;
 
     for (let i = 0; i < text.length; i++) {
         let span = document.createElement("span");
-     
-
         span.textContent = text[i];
         span.classList.add("char");
         if (i === 0) span.classList.add("active");
@@ -81,45 +84,46 @@ function setLanguage(lang, e) {
 
 
 document.addEventListener("keydown", function(e) {
-  
     if (finished) return;
 
     let chars = document.querySelectorAll(".char");
 
-   
+    // Prevent space from scrolling the page
     if (e.key === " ") e.preventDefault();
 
-    
+    // Treat Enter as \n for typing — prevent any default (form submit, page scroll, restart)
+    if (e.key === "Enter") e.preventDefault();
+
+    // --- Backspace ---
     if (e.key === "Backspace") {
-        // Can't go before the start
         if (index === 0) return;
 
         chars[index].classList.remove("active");
         index--;
 
-    
-        if (chars[index].classList.contains("correct")) {
-            correctKeystrokes--;
-        }
+        if (chars[index].classList.contains("correct")) correctKeystrokes--;
         chars[index].classList.remove("correct", "wrong");
         chars[index].classList.add("active");
 
-      
         totalKeystrokes--;
 
         updateStats();
         return;
     }
 
-    if (e.key.length !== 1) return;
+    // Normalize Enter → "\n" so it matches the snippet's newline characters
+    let typedChar = e.key === "Enter" ? "\n" : e.key;
 
-    
-    
+    // Only accept single printable characters + the normalized newline
+    if (typedChar !== "\n" && typedChar.length !== 1) return;
+
+    // Start timer on first keypress
     if (!startTime) startTime = new Date();
 
     totalKeystrokes++;
+    rawKeystrokes++;      // raw never goes back down
 
-    if (e.key === text[index]) {
+    if (typedChar === text[index]) {
         chars[index].classList.add("correct");
         correctKeystrokes++;
     } else {
@@ -131,8 +135,6 @@ document.addEventListener("keydown", function(e) {
 
     if (index < chars.length) {
         chars[index].classList.add("active");
-      
-        
         chars[index].scrollIntoView({ block: "nearest", behavior: "smooth" });
     }
 
@@ -146,20 +148,25 @@ function updateStats() {
     if (!startTime) return;
 
     let minutes = (new Date() - startTime) / 1000 / 60;
-    let wpm = minutes > 0 ? Math.floor((index / 5) / minutes) : 0;
+
+    // WPM: only correct characters count toward words
+    let wpm = minutes > 0 ? Math.floor((correctKeystrokes / 5) / minutes) : 0;
     wpmText.innerText = wpm;
 
-    
-    
+    // Raw WPM: every character typed forward counts, errors included
+    let raw = minutes > 0 ? Math.floor((rawKeystrokes / 5) / minutes) : 0;
+    rawText.innerText = raw;
+
+    // Accuracy: correct vs total (backspace-adjusted)
     let acc = totalKeystrokes > 0
         ? Math.floor((correctKeystrokes / totalKeystrokes) * 100)
         : 100;
-
     accText.innerText = acc + "%";
 }
 
 function resetStats() {
     wpmText.innerText = 0;
+    rawText.innerText = 0;
     accText.innerText = "100%";
 }
 
@@ -172,7 +179,8 @@ function endTest() {
     resultDiv.classList.remove("hidden");
     resultDiv.innerHTML = `
         ✅ Finished!<br>
-        WPM: <strong>${wpmText.innerText}</strong><br>
+        WPM: <strong>${wpmText.innerText}</strong> &nbsp;
+        Raw: <strong>${rawText.innerText}</strong><br>
         Accuracy: <strong>${accText.innerText}</strong><br>
         Time: <strong>${time}s</strong><br>
         <button id="restart-btn" onclick="load()">↺ Restart</button>
@@ -180,7 +188,7 @@ function endTest() {
 }
 
 
-
+// Theme cycling
 let themes = ["dark", "light", "neon"];
 let themeLabels = ["🌙 DARK", "☀️ LIGHT", "⚡ NEON"];
 let themeIndex = 0;
