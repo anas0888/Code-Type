@@ -8,7 +8,6 @@
 
 <div class="app">
 
-    
     <div class="sidebar">
         <h3>Languages</h3>
         <button onclick="setLanguage('js', event)">JavaScript</button>
@@ -16,16 +15,16 @@
         <button onclick="setLanguage('cpp', event)">C++</button>
     </div>
 
-    
     <div class="main">
 
         <div class="topbar">
-            <button id="themeBtn">🌙 Dark</button>
+            <button id="themeBtn">🌙</button>
         </div>
 
         <div id="stats">
-            <span id="wpm">0</span> wpm
-            <span id="acc">100%</span> acc
+            <span>WPM: <b id="wpm">0</b></span>
+            <span>RAW: <b id="raw">0</b></span>
+            <span>ACC: <b id="acc">100%</b></span>
         </div>
 
         <div id="code"></div>
